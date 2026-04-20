@@ -1,0 +1,194 @@
+<mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    <!-- TITLE -->
+    <mxCell id="title" value="Walmart Production Readiness — Before vs. After Port.io" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#1a1a2e;" vertex="1" parent="1">
+      <mxGeometry x="200" y="20" width="1254" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- COLUMN HEADERS -->
+    <mxCell id="h1" value="TODAY — Manual &amp; Fragmented" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1;align=center;" vertex="1" parent="1">
+      <mxGeometry x="200" y="80" width="560" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="h2" value="WITH PORT.IO — Automated &amp; Self-Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;align=center;" vertex="1" parent="1">
+      <mxGeometry x="890" y="80" width="560" height="50" as="geometry" />
+    </mxCell>
+
+    <!-- LANE BACKGROUNDS -->
+    <mxCell id="lane1bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;opacity=20;" vertex="1" parent="1">
+      <mxGeometry x="200" y="150" width="560" height="950" as="geometry" />
+    </mxCell>
+    <mxCell id="lane2bg" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;opacity=20;" vertex="1" parent="1">
+      <mxGeometry x="890" y="150" width="560" height="950" as="geometry" />
+    </mxCell>
+
+    <!-- ===== LEFT LANE: TODAY ===== -->
+
+    <!-- Step 1 -->
+    <mxCell id="l1" value="👨‍💻 Developer finishes code" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="280" y="170" width="400" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="l1a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="l1" target="l2" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step 2 -->
+    <mxCell id="l2" value="📋 Manually reviews Confluence checklist&#xa;(30–60 min per service)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="280" y="250" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="l2a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="l2" target="l3" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step 3 -->
+    <mxCell id="l3" value="📧 Emails platform team for approval&#xa;⏳ 2–5 days waiting" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="280" y="340" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="l3a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="l3" target="l4" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step 4 -->
+    <mxCell id="l4" value="🔍 Platform team reviews manually&#xa;No standard criteria" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="280" y="430" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="l4a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="l4" target="l5" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step 5 -->
+    <mxCell id="l5" value="🔒 Runs Snyk scan manually&#xa;Results emailed as CSV" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="280" y="520" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="l5a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="l5" target="l6" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step 6 -->
+    <mxCell id="l6" value="❓ Maybe gets approved&#xa;No on-call assigned" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="280" y="610" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="l6a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="l6" target="l7" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step 7 -->
+    <mxCell id="l7" value="🚀 Deploys to production" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="280" y="700" width="400" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="l7a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="l7" target="l8" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step 8 -->
+    <mxCell id="l8" value="🚨 Incident occurs&#xa;No on-call assigned → chaos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="280" y="780" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="l8a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="l8" target="l9" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step 9 -->
+    <mxCell id="l9" value="📉 Postmortem + rework&#xa;1–3 days lost | $2–5M cost" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="280" y="870" width="400" height="60" as="geometry" />
+    </mxCell>
+
+    <!-- Tools used (left) -->
+    <mxCell id="lt" value="Tools: Confluence · Email · Snyk CLI · Spreadsheets" style="text;html=1;strokeColor=#b85450;fillColor=#f8cecc;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+      <mxGeometry x="280" y="960" width="400" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- ===== RIGHT LANE: WITH PORT ===== -->
+
+    <!-- Step R1 -->
+    <mxCell id="r1" value="👨‍💻 Developer finishes code" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="970" y="170" width="400" height="50" as="geometry" />
+    </mxCell>
+    <mxCell id="r1a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="r1" target="r2" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step R2 -->
+    <mxCell id="r2" value="⚡ Port scorecard auto-checks ALL rules instantly&#xa;K8s limits ✓ | No privileged ✓ | No latest tag ✓&#xa;On-call assigned ✓ | 0 critical CVEs ✓" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="970" y="250" width="400" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="r2a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="r2" target="r3" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step R3 -->
+    <mxCell id="r3" value="🏆 Bronze / Silver / Gold score visible instantly&#xa;Gaps shown with specific fix guidance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="970" y="350" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="r3a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="r3" target="r4" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step R4 -->
+    <mxCell id="r4" value="🔒 Developer triggers Snyk scan via Port self-service&#xa;→ GitHub Actions runs scan automatically&#xa;→ Results reported back to Port in real-time" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="970" y="440" width="400" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="r4a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="r4" target="r5" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step R5 -->
+    <mxCell id="r5" value="📟 PagerDuty on-call assigned via Port self-service&#xa;→ Escalation policy configured automatically" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="970" y="540" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="r5a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="r5" target="r6" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step R6 -->
+    <mxCell id="r6" value="🎫 Jira ticket auto-created for any open issues&#xa;→ Linked to service entity in Port catalog" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="970" y="630" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="r6a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="r6" target="r7" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step R7 -->
+    <mxCell id="r7" value="🥇 Gold scorecard = SHIP IT ✅&#xa;Deploy with confidence" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="970" y="720" width="400" height="60" as="geometry" />
+    </mxCell>
+    <mxCell id="r7a" value="" style="edgeStyle=orthogonalEdgeStyle;" edge="1" source="r7" target="r8" parent="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    <!-- Step R8 -->
+    <mxCell id="r8" value="📊 Datadog monitors alert if incident occurs&#xa;→ PagerDuty pages on-call automatically&#xa;→ Incident acknowledged via Port action&#xa;→ MTTR tracked in Port dashboard" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="1">
+      <mxGeometry x="970" y="810" width="400" height="80" as="geometry" />
+    </mxCell>
+
+    <!-- Tools used (right) -->
+    <mxCell id="rt" value="Tools: Port.io · GitHub · Datadog · Snyk · PagerDuty · Jira" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=2;" vertex="1" parent="1">
+      <mxGeometry x="970" y="920" width="400" height="40" as="geometry" />
+    </mxCell>
+
+    <!-- CENTER DIVIDER -->
+    <mxCell id="divider" value="" style="endArrow=none;dashed=1;html=1;strokeColor=#666666;strokeWidth=2;" edge="1" parent="1">
+      <mxGeometry x="780" y="150" relative="1" as="geometry">
+        <Array as="points">
+          <mxPoint x="780" y="1100" />
+        </Array>
+      </mxGeometry>
+    </mxCell>
+
+    <!-- VS label -->
+    <mxCell id="vs" value="VS" style="ellipse;whiteSpace=wrap;html=1;fillColor=#1a1a2e;strokeColor=#1a1a2e;fontColor=#ffffff;fontSize=16;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="745" y="590" width="70" height="70" as="geometry" />
+    </mxCell>
+
+    <!-- OUTCOME BOXES -->
+    <mxCell id="out1" value="❌ 2–5 days to production&#xa;❌ $2–5M per incident&#xa;❌ No standard criteria&#xa;❌ Manual, error-prone" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="280" y="1020" width="400" height="80" as="geometry" />
+    </mxCell>
+    <mxCell id="out2" value="✅ Instant readiness check&#xa;✅ 40% fewer failed deploys&#xa;✅ Gold scorecard = ship it&#xa;✅ Full self-service autonomy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="970" y="1020" width="400" height="80" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
