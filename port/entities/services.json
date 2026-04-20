@@ -1,0 +1,122 @@
+[
+  {
+    "identifier": "checkout-service",
+    "title": "Checkout Service",
+    "blueprint": "service",
+    "properties": {
+      "language": "Node.js",
+      "version": "1.4.2",
+      "team": "payments",
+      "url": "https://github.com/officialbillerin-cloud/port.io/tree/main/walmart-mock/services/checkout-service",
+      "readme": "Handles the end-to-end checkout flow for Walmart.com. Processes cart submissions, validates inventory, and coordinates with payment-gateway to complete orders.",
+      "on_call": "payments-team@walmart.com",
+      "tier": "Tier-1",
+      "lifecycle": "Production",
+      "last_build_status": "success",
+      "change_failure_rate": 0.08
+    },
+    "relations": {
+      "environment": "walmart-prod"
+    }
+  },
+  {
+    "identifier": "payment-gateway",
+    "title": "Payment Gateway",
+    "blueprint": "service",
+    "properties": {
+      "language": "Node.js",
+      "version": "2.1.0",
+      "team": "payments",
+      "url": "https://github.com/officialbillerin-cloud/port.io/tree/main/walmart-mock/services/payment-gateway",
+      "readme": "Processes all payment transactions for Walmart.com. Integrates with Stripe, PayPal, and Walmart Pay. Handles authorization, capture, and refunds.",
+      "on_call": "payments-team@walmart.com",
+      "tier": "Tier-1",
+      "lifecycle": "Production",
+      "last_build_status": "success",
+      "change_failure_rate": 0.04
+    },
+    "relations": {
+      "environment": "walmart-prod"
+    }
+  },
+  {
+    "identifier": "inventory-api",
+    "title": "Inventory API",
+    "blueprint": "service",
+    "properties": {
+      "language": "Node.js",
+      "version": "3.0.1",
+      "team": "supply-chain",
+      "url": "https://github.com/officialbillerin-cloud/port.io/tree/main/walmart-mock/services/inventory-api",
+      "readme": "Real-time inventory management across all Walmart warehouses and stores. Tracks stock levels, reservations, and fulfillment routing.",
+      "on_call": "supply-chain@walmart.com",
+      "tier": "Tier-1",
+      "lifecycle": "Production",
+      "last_build_status": "success",
+      "change_failure_rate": 0.06
+    },
+    "relations": {
+      "environment": "walmart-prod"
+    }
+  },
+  {
+    "identifier": "search-service",
+    "title": "Search Service",
+    "blueprint": "service",
+    "properties": {
+      "language": "Node.js",
+      "version": "1.8.3",
+      "team": "discovery",
+      "url": "https://github.com/officialbillerin-cloud/port.io/tree/main/walmart-mock/services/search-service",
+      "readme": "Powers product search across Walmart.com. Handles full-text search, faceted filtering, autocomplete, and search ranking.",
+      "on_call": "discovery-team@walmart.com",
+      "tier": "Tier-2",
+      "lifecycle": "Production",
+      "last_build_status": "success",
+      "change_failure_rate": 0.11
+    },
+    "relations": {
+      "environment": "walmart-prod"
+    }
+  },
+  {
+    "identifier": "auth-service",
+    "title": "Auth Service",
+    "blueprint": "service",
+    "properties": {
+      "language": "Node.js",
+      "version": "4.2.1",
+      "team": "platform",
+      "url": "https://github.com/officialbillerin-cloud/port.io/tree/main/walmart-mock/services/auth-service",
+      "readme": "Centralized authentication and authorization for all Walmart services. Issues JWT tokens, manages sessions, and enforces RBAC policies.",
+      "on_call": "platform-team@walmart.com",
+      "tier": "Tier-1",
+      "lifecycle": "Production",
+      "last_build_status": "success",
+      "change_failure_rate": 0.03
+    },
+    "relations": {
+      "environment": "walmart-prod"
+    }
+  },
+  {
+    "identifier": "recommendation-api",
+    "title": "Recommendation API",
+    "blueprint": "service",
+    "properties": {
+      "language": "Node.js",
+      "version": "2.3.0",
+      "team": "discovery",
+      "url": "https://github.com/officialbillerin-cloud/port.io/tree/main/walmart-mock/services/recommendation-api",
+      "readme": "ML-powered product recommendation engine. Serves personalized recommendations based on purchase history, browsing behavior, and collaborative filtering.",
+      "on_call": "discovery-team@walmart.com",
+      "tier": "Tier-2",
+      "lifecycle": "Production",
+      "last_build_status": "success",
+      "change_failure_rate": 0.09
+    },
+    "relations": {
+      "environment": "walmart-prod"
+    }
+  }
+]
