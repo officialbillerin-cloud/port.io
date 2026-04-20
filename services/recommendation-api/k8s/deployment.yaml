@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-api
+  namespace: walmart-prod
+  labels:
+    app: recommendation-api
+    team: discovery
+    env: production
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: recommendation-api
+  template:
+    metadata:
+      labels:
+        app: recommendation-api
+        team: discovery
+        version: "2.3.0"
+    spec:
+      containers:
+        - name: recommendation-api
+          image: walmart/recommendation-api:2.3.0
+          ports:
+            - containerPort: 3006
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3006
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3006
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+          env:
+            - name: NODE_ENV
+              value: "production"
