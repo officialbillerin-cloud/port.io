@@ -1,0 +1,86 @@
+name: CI — Build & Test All Services
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'walmart-mock/services/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'walmart-mock/services/**'
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      services: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            checkout-service:
+              - 'walmart-mock/services/checkout-service/**'
+            payment-gateway:
+              - 'walmart-mock/services/payment-gateway/**'
+            inventory-api:
+              - 'walmart-mock/services/inventory-api/**'
+            search-service:
+              - 'walmart-mock/services/search-service/**'
+            auth-service:
+              - 'walmart-mock/services/auth-service/**'
+            recommendation-api:
+              - 'walmart-mock/services/recommendation-api/**'
+
+  build-and-test:
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - checkout-service
+          - payment-gateway
+          - inventory-api
+          - search-service
+          - auth-service
+          - recommendation-api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: walmart-mock/services/${{ matrix.service }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: walmart-mock/services/${{ matrix.service }}
+        run: npm ci
+
+      - name: Run tests
+        working-directory: walmart-mock/services/${{ matrix.service }}
+        run: npm test --if-present
+
+      - name: Build Docker image
+        run: |
+          docker build -t walmart/${{ matrix.service }}:${{ github.sha }} \
+            walmart-mock/services/${{ matrix.service }}
+
+      - name: Report build status to Port
+        if: always()
+        uses: port-labs/port-github-action@v1
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: UPSERT
+          identifier: ${{ matrix.service }}
+          blueprint: service
+          properties: |
+            {
+              "last_build_status": "${{ job.status }}",
+              "last_build_sha": "${{ github.sha }}",
+              "last_build_time": "${{ github.event.head_commit.timestamp }}"
+            }
