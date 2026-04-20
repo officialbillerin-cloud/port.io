@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: search-service
+  namespace: walmart-prod
+  labels:
+    app: search-service
+    team: discovery
+    env: production
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: search-service
+  template:
+    metadata:
+      labels:
+        app: search-service
+        team: discovery
+        version: "1.8.3"
+    spec:
+      containers:
+        - name: search-service
+          image: walmart/search-service:1.8.3
+          ports:
+            - containerPort: 3004
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "800m"
+              memory: "768Mi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3004
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 3004
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+          env:
+            - name: NODE_ENV
+              value: "production"
