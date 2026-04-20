@@ -1,14 +1,10 @@
-name: CI — Build & Test All Services
+name: CI ג€” Build & Test All Services
 
 on:
   push:
     branches: [main, develop]
-    paths:
-      - 'walmart-mock/services/**'
   pull_request:
     branches: [main]
-    paths:
-      - 'walmart-mock/services/**'
 
 jobs:
   detect-changes:
@@ -57,17 +53,17 @@ jobs:
           cache-dependency-path: walmart-mock/services/${{ matrix.service }}/package-lock.json
 
       - name: Install dependencies
-        working-directory: walmart-mock/services/${{ matrix.service }}
+        working-directory: services/${{ matrix.service }}
         run: npm ci
 
       - name: Run tests
-        working-directory: walmart-mock/services/${{ matrix.service }}
+        working-directory: services/${{ matrix.service }}
         run: npm test --if-present
 
       - name: Build Docker image
         run: |
           docker build -t walmart/${{ matrix.service }}:${{ github.sha }} \
-            walmart-mock/services/${{ matrix.service }}
+            services/${{ matrix.service }}
 
       - name: Report build status to Port
         if: always()
