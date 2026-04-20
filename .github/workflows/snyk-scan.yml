@@ -1,0 +1,88 @@
+name: Snyk Security Scan (Port Action)
+
+on:
+  workflow_dispatch:
+    inputs:
+      incident_identifier:
+        description: 'PagerDuty Incident ID'
+        required: true
+      incident_title:
+        description: 'Incident title'
+        required: true
+      incident_status:
+        description: 'Incident status'
+        required: true
+      incident_urgency:
+        description: 'Incident urgency'
+        required: true
+      incident_url:
+        description: 'Incident URL in PagerDuty'
+        required: false
+      severity_threshold:
+        description: 'Minimum severity (critical/high/medium/low)'
+        required: true
+        default: 'high'
+      notify_assignee:
+        description: 'Notify incident assignee'
+        required: true
+        default: 'true'
+      port_run_id:
+        description: 'Port run ID for status updates'
+        required: true
+
+jobs:
+  snyk-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Notify Port — Scan Starting
+        uses: port-labs/port-github-action@v1
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: PATCH_RUN
+          runId: ${{ inputs.port_run_id }}
+          logMessage: "🔍 Starting Snyk scan for incident: ${{ inputs.incident_title }} (severity: ${{ inputs.severity_threshold }}+)"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Snyk
+        run: npm install -g snyk
+
+      - name: Run Snyk Scan
+        id: snyk
+        run: |
+          snyk test \
+            --severity-threshold=${{ inputs.severity_threshold }} \
+            --json > snyk-results.json || true
+          echo "scan_status=$?" >> $GITHUB_OUTPUT
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Parse Snyk Results
+        id: parse
+        run: |
+          VULN_COUNT=$(cat snyk-results.json | jq '[.vulnerabilities[]? | select(.severity == "critical" or .severity == "high")] | length' 2>/dev/null || echo "0")
+          echo "vuln_count=$VULN_COUNT" >> $GITHUB_OUTPUT
+
+      - name: Report Results to Port
+        uses: port-labs/port-github-action@v1
+        with:
+          clientId: ${{ secrets.PORT_CLIENT_ID }}
+          clientSecret: ${{ secrets.PORT_CLIENT_SECRET }}
+          operation: PATCH_RUN
+          runId: ${{ inputs.port_run_id }}
+          status: "SUCCESS"
+          summary: "✅ Snyk scan complete — ${{ steps.parse.outputs.vuln_count }} critical/high vulnerabilities found"
+          logMessage: |
+            Incident: ${{ inputs.incident_title }}
+            Severity Filter: ${{ inputs.severity_threshold }}+
+            Vulnerabilities Found: ${{ steps.parse.outputs.vuln_count }}
+            PagerDuty URL: ${{ inputs.incident_url }}
+            Snyk Results: https://app.snyk.io
