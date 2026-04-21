@@ -15,8 +15,9 @@
 | 2:30–4:00 | Scorecards | Gold/Silver rules explained |
 | 4:00–5:30 | Self-Service: Snyk Scan | Trigger GitHub Actions from Port |
 | 5:30–6:30 | Self-Service: Create Jira Issue | Dev creates ticket without leaving Port |
-| 6:30–8:00 | Integrations | 5 live integrations, all healthy |
-| 8:00–10:00 | Datadog + Wrap-up | Live metrics, the "before vs after" close |
+| 6:30–7:30 | Builder: Data Model | Hub-and-spoke design, aggregations (if asked) |
+| 7:30–8:30 | Integrations | 5 live integrations, all healthy |
+| 8:30–10:00 | Datadog + Wrap-up | Live metrics, the "before vs after" close |
 
 ---
 
@@ -139,6 +140,51 @@
 **Bonus — show the automation:**
 - Go to **Builder** → **Automations** → find `gold_scorecard_achieved`
 - "This automation fires automatically when any service hits Gold. It creates the Jira ticket without any human action. That's the 19 automations running 24/7 in the background."
+
+---
+
+## STOP 5.5 — Builder: Data Model Design (optional, ~1 min if asked)
+**Where:** Left sidebar → "Builder" → "Data Model" (or "Blueprints")
+
+> Use this if the interviewer asks "how does this work technically?" or "how is the data model designed?"
+
+**What to show:**
+
+**Click on the `service` blueprint:**
+
+> "The service blueprint is the hub of the entire design. Notice it has zero direct properties. Every number you see on a service — CVE count, MTTR, on-call name — is pulled automatically from connected tools."
+
+Point to each section:
+
+1. **Relations tab:**
+   - `repository` → GitHub Repository
+   - `pager_duty_service` → PagerDuty Service
+   - `snyk_target` → Snyk Target
+   - "Three relations. That's how Port connects GitHub, PagerDuty, and Snyk to a service."
+
+2. **Mirror Properties tab:**
+   - `pagerduty_oncall` → pulled from pagerdutyService.oncall
+   - `open_critical_vulnerabilities` → aggregated from snykVulnerability entities
+   - "Mirror properties pull data from related entities. The on-call name lives in PagerDuty — Port just mirrors it here."
+
+3. **Aggregation Properties tab:**
+   - `open_critical_vulnerabilities` — counts open critical Snyk CVEs
+   - `total_incidents` — counts PagerDuty incidents
+   - `mean_time_to_recovery` — averages PagerDuty incident recovery time
+   - `lead_time_for_change` — averages GitHub PR merge time
+   - "These are live aggregations. Every time a new Snyk CVE is created, this number updates automatically."
+
+4. **Calculation Properties tab:**
+   - `change_failure_rate` — formula: incidents / (deployments + incidents) × 100
+   - `freshness` — days since last GitHub push
+   - "These are computed fields. The change failure rate is calculated from real incident and deployment data."
+
+**Key line:**
+> "This hub-and-spoke design is what makes Port powerful. The service is the hub. GitHub, Snyk, PagerDuty, Datadog are the spokes. Port aggregates everything without duplicating data."
+
+**Click on `k8s_workload` blueprint:**
+- Show `isHealthy`, `hasLimits`, `hasPrivileged`, `hasLatest` properties
+- "These four boolean properties are what the Gold scorecard evaluates. Simple, clear, enforceable."
 
 ---
 
