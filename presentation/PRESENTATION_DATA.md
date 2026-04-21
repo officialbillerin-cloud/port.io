@@ -4,6 +4,154 @@
 
 ---
 
+## DATA MODEL DESIGN (Port Builder)
+
+This is the core architectural design visible in Port's Builder. Understanding this is critical for the "Technical Understanding" assessment criterion.
+
+### The Central Blueprint: `service`
+
+The `service` blueprint is the heart of the design. It has **no direct properties** — instead it pulls all its data from related entities via three mechanisms:
+
+#### Relations (how service connects to other tools)
+| Relation | Target Blueprint | What it represents |
+|---|---|---|
+| `repository` | `githubRepository` | The GitHub repo for this service |
+| `pager_duty_service` | `pagerdutyService` | The PagerDuty service for on-call |
+| `snyk_target` | `snykTarget` | The Snyk target for vulnerability scanning |
+
+#### Mirror Properties (data pulled from related entities)
+These appear on the service entity but actually live in related blueprints:
+| Property | Source | What it shows |
+|---|---|---|
+| `pagerduty_oncall` | pagerdutyService.oncall | Who is on-call right now |
+| `pagerdutyServiceId` | pagerdutyService.$identifier | PagerDuty service ID |
+| `url` | githubRepository.url | GitHub repo URL |
+| `language` | githubRepository.language | Primary language |
+| `last_push` | githubRepository.last_push | Last commit time |
+| `readme` | githubRepository.readme | README content |
+| `snyk_target_name` | snykTarget.$title | Snyk target name |
+| `enabled_snyk_products` | snykTarget.snyk_product_types | Active Snyk products |
+
+#### Calculation Properties (computed from formulas)
+| Property | Formula | What it means |
+|---|---|---|
+| `freshness` | Days since last push to main | How stale is the repo? |
+| `change_failure_rate` | total_incidents / (total_deployments + total_incidents) × 100 | % of deploys that cause incidents |
+
+#### Aggregation Properties (counted/averaged from related entities)
+These are the most powerful — they aggregate data from child entities automatically:
+| Property | Source | Function | What it counts |
+|---|---|---|---|
+| `open_critical_vulnerabilities` | snykVulnerability | count | Open critical CVEs |
+| `open_high_vulnerabilities` | snykVulnerability | count | Open high CVEs |
+| `open_medium_vulnerabilities` | snykVulnerability | count | Open medium CVEs |
+| `open_low_vulnerabilities` | snykVulnerability | count | Open low CVEs |
+| `fixes_in_the_last_30_days` | snykVulnerability | count | CVEs fixed this month |
+| `total_incidents` | pagerdutyIncident | count | Total incidents this month |
+| `mean_time_to_recovery` | pagerdutyIncident | average | Avg recovery time (hours) |
+| `lead_time_for_change` | githubPullRequest | average | Avg PR merge time (hours) |
+| `snyk_code_projects` | snykProject | count | Number of Snyk Code projects |
+| `snyk_open_source_projects` | snykProject | count | Number of Snyk OSS projects |
+
+> **Key talking point:** "The service blueprint has zero manually-entered properties. Every number you see — CVE count, MTTR, on-call name — is pulled automatically from the connected tools. This is what 'automatic discovery' means in practice."
+
+---
+
+### Supporting Blueprints
+
+#### `k8s_workload` — The K8s layer
+Direct properties that drive the Gold scorecard:
+- `isHealthy` (enum: Healthy/Unhealthy) — workload health status
+- `hasLimits` (boolean) — all containers have CPU/memory limits
+- `hasPrivileged` (boolean) — any container running as privileged
+- `hasLatest` (boolean) — any container using 'latest' image tag
+- `availableReplicas` / `replicas` — current vs desired pod count
+- `kind` (enum: Deployment/StatefulSet/DaemonSet/Rollout)
+
+Relations: `Namespace` → `k8s_namespace`
+
+#### `k8s_pod` — Individual pod tracking
+- `phase` (Running/Pending/Failed)
+- `labels` (object — app, team, version)
+- Mirror: `containers`, `namespace`, `cluster`
+- Relations: `k8s_workload`, `replicaSet`, `Node`
+
+#### `pagerdutyService` — On-call management
+- `oncall` — primary on-call email
+- `secondaryOncall` — backup on-call
+- `status` (active/warning/critical)
+- `meanSecondsToResolve` — MTTR in seconds
+- `meanSecondsToFirstAck` — time to first acknowledgment
+- `escalationLevels` — number of escalation tiers
+
+#### `snykVulnerability` — Security tracking
+- `severity` (critical/high/medium/low)
+- `status` (open/resolved)
+- `score` — CVSS score
+- `packageNames` — affected packages
+- `snyk_problem_id` — Snyk CVE identifier
+- `resolution_type` — how it was fixed
+- Relations: `project` → snykProject, `assignee` → user
+
+#### `datadogMonitor` — Observability
+- `overallState` (OK/Alert/No Data/Warn)
+- `monitorType` (synthetics alert/query alert/etc.)
+- `tags` — Datadog tags (service:name, team:name, env:production)
+- `link` — direct link to Datadog monitor
+
+#### `githubPullRequest` — Code change tracking
+- `status` (open/closed/merged)
+- `branch` — source branch name
+- `leadTimeHours` — hours from open to merge
+- `prNumber` — PR number
+- Calculation: `days_old` — how long the PR has been open
+- Relations: `repository`, `service`, `creator`, `reviewers`
+
+#### `argocdApplication` — Deployment state
+- `syncStatus` (Synced/OutOfSync/Unknown)
+- `healthStatus` (Healthy/Degraded/Progressing/Missing)
+- `gitRepo` — source Git repository
+- `gitPath` — path to K8s manifests
+- `targetRevision` — target Git ref (HEAD/branch/tag)
+- Relations: `environment`, `cluster`, `namespace`
+
+#### `jiraIssue` — Issue tracking
+- `status` (To Do/In Progress/Done)
+- `issueType` (Feature/Task/Epic/Subtask)
+- `priority` (High/Medium/Low)
+- Calculation: `handlingDuration` — days from creation to resolution
+- Relations: `service`, `project`, `assignee`, `reporter`
+
+---
+
+### The Data Flow (how it all connects)
+
+```
+GitHub Repo ──────────────────────────────────────────────────────┐
+  └─ repository relation                                           │
+                                                                   ▼
+PagerDuty Service ──── pager_duty_service relation ──────► SERVICE ENTITY
+  └─ oncall, MTTR                                          (the hub)
+  └─ incidents ──── aggregated as total_incidents,              │
+                    mean_time_to_recovery                        │
+                                                                 │
+Snyk Target ──────── snyk_target relation ───────────────────────┘
+  └─ vulnerabilities ── aggregated as open_critical_vulnerabilities,
+                        open_high_vulnerabilities, etc.
+
+K8s Workload ──── isHealthy, hasLimits, hasPrivileged, hasLatest
+  └─ K8s Pods ──── phase, labels, containers
+
+ArgoCD Application ──── syncStatus, healthStatus
+  └─ Environment ──── walmart-prod
+
+Jira Issue ──── service relation ──── linked to service entity
+```
+
+> **Key talking point for "Technical Understanding":** "The design follows a hub-and-spoke model. The service blueprint is the hub — it has no data of its own, but aggregates everything from the spokes: GitHub for code health, Snyk for security, PagerDuty for reliability, Datadog for observability. This is how Port enables a single pane of glass without duplicating data."
+
+---
+
 ## WHAT WAS BUILT — COMPLETE SUMMARY
 
 ### Integrations (5/5 — ALL HEALTHY ✅)
