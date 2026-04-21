@@ -1,0 +1,14 @@
+# Walmart Mock Services — Code Owners
+# These owners will be requested for review on PRs
+
+# Global owners
+* @officialbillerin-cloud
+
+# Service-specific owners
+/services/checkout-service/     @officialbillerin-cloud
+/services/payment-gateway/      @officialbillerin-cloud
+/services/inventory-api/        @officialbillerin-cloud
+/services/search-service/       @officialbillerin-cloud
+/services/auth-service/         @officialbillerin-cloud
+/services/recommendation-api/   @officialbillerin-cloud
+/presentation/                  @officialbillerin-cloud
