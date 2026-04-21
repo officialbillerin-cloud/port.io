@@ -35,10 +35,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          SERVICE_PATH="walmart-mock/services/${{ github.event.inputs.service }}"
+          SERVICE_PATH="services/${{ github.event.inputs.service }}"
           if [ -d "$SERVICE_PATH" ]; then
             cd "$SERVICE_PATH"
-            npm ci
+            npm install
           else
             echo "Service directory not found: $SERVICE_PATH"
             exit 1
@@ -54,7 +54,7 @@ jobs:
           args: >
             --severity-threshold=${{ github.event.inputs.severity_threshold }}
             --json
-            walmart-mock/services/${{ github.event.inputs.service }}
+            services/${{ github.event.inputs.service }}
 
       - name: Parse Snyk results
         id: parse
@@ -66,6 +66,7 @@ jobs:
           echo "Scan complete: $CRITICAL critical, $HIGH high vulnerabilities"
 
       - name: Report results to Port
+        if: ${{ github.event.inputs.port_run_id != '' }}
         uses: port-labs/port-github-action@v1
         with:
           clientId: ${{ secrets.PORT_CLIENT_ID }}
@@ -77,3 +78,14 @@ jobs:
             Critical vulnerabilities: ${{ steps.parse.outputs.critical }}
             High vulnerabilities: ${{ steps.parse.outputs.high }}
             Threshold: ${{ github.event.inputs.severity_threshold }}
+
+      - name: Summary
+        run: |
+          echo "## Snyk Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | ${{ github.event.inputs.service }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Severity Threshold | ${{ github.event.inputs.severity_threshold }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Critical CVEs | ${{ steps.parse.outputs.critical }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| High CVEs | ${{ steps.parse.outputs.high }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Port Run ID | ${{ github.event.inputs.port_run_id || 'N/A (manual trigger)' }} |" >> $GITHUB_STEP_SUMMARY
